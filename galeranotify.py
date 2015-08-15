@@ -17,7 +17,8 @@ import getopt
 
 import smtplib
 
-try: from email.mime.text import MIMEText
+try:
+    from email.mime.text import MIMEText
 except ImportError:
     # Python 2.4 (CentOS 5.x)
     from email.MIMEText import MIMEText
@@ -61,7 +62,7 @@ def main(argv):
     usage += " list of the component member UUIDs> --index <n>"
 
     try:
-        opts, args = getopt.getopt(argv, "h", ["status=","uuid=",'primary=','members=','index='])
+        opts, args = getopt.getopt(argv, "h", ["status=", "uuid=", 'primary=', 'members=', 'index='])
     except getopt.GetoptError:
         print usage
         sys.exit(2)
@@ -96,13 +97,14 @@ def main(argv):
 
     sys.exit(0)
 
+
 def send_notification(from_email, to_email, subject, message, smtp_server,
                       smtp_port, use_ssl, use_auth, smtp_user, smtp_pass):
     msg = MIMEText(message)
 
     msg['From'] = from_email
     msg['To'] = ', '.join(to_email)
-    msg['Subject'] =  subject
+    msg['Subject'] = subject
 
     if(use_ssl):
         mailer = smtplib.SMTP_SSL(smtp_server, smtp_port)
@@ -114,6 +116,7 @@ def send_notification(from_email, to_email, subject, message, smtp_server,
 
     mailer.sendmail(from_email, to_email, msg.as_string())
     mailer.close()
+
 
 class GaleraStatus:
     def __init__(self, server):
