@@ -47,6 +47,9 @@ MAIL_FROM = 'YOUR_EMAIL_HERE'
 # Takes a list of recipients
 MAIL_TO = ['SOME_OTHER_EMAIL_HERE']
 
+# Flag file for mysqlchk.sh
+STATUS_FLAG_FILE = '/dev/shm/wsrep_local_state'
+
 # Edit below at your own risk
 ################################################################################
 
@@ -78,6 +81,7 @@ def main(argv):
                 sys.exit()
             elif opt in ("--status"):
                 message_obj.set_status(arg)
+                set_status_flag(arg)
             elif opt in ("--uuid"):
                 message_obj.set_uuid(arg)
             elif opt in ("--primary"):
@@ -118,6 +122,15 @@ def send_notification(from_email, to_email, subject, message, smtp_server,
 
     mailer.sendmail(from_email, to_email, msg.as_string())
     mailer.close()
+
+
+def set_status_flag(status):
+    try:
+        status_file = open(STATUS_FLAG_FILE, 'w')
+        status_file.write("%s\n" % status)
+        status_file.close()
+    except Exception, e:
+        print "Error updating status flag file: %s" % e
 
 
 class GaleraStatus:
